@@ -60,18 +60,32 @@
 
 // module.exports = db;
 
-const { Sequelize } = require("sequelize");
+let sequelize;
 
-const sequelize = new Sequelize(
-  process.env.MYSQLDATABASE,
-  process.env.MYSQLUSER,
-  process.env.MYSQLPASSWORD,
-  {
-    host: process.env.MYSQLHOST,
-    port: Number(process.env.MYSQLPORT || 3306),
-    dialect: "mysql",
-    logging: false,
+if (process.env.MYSQLHOST) {
+  // ✅ Railway / Production
+  sequelize = new Sequelize(
+    process.env.MYSQLDATABASE,
+    process.env.MYSQLUSER,
+    process.env.MYSQLPASSWORD,
+    {
+      host: process.env.MYSQLHOST,
+      port: Number(process.env.MYSQLPORT || 3306),
+      dialect: "mysql",
+      logging: false,
+    }
+  );
+} else {
+  // ✅ Local dev (config.json)
+  const config = require(__dirname + "/../../config/config.json")[env];
+  if (config.use_env_variable) {
+    sequelize = new Sequelize(process.env[config.use_env_variable], config);
+  } else {
+    sequelize = new Sequelize(
+      config.database,
+      config.username,
+      config.password,
+      config
+    );
   }
-);
-
-module.exports = sequelize;
+}
