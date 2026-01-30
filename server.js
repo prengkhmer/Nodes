@@ -83,10 +83,10 @@ const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
     origin: "*",
-    origin: [
-      "http://localhost:3000", // React local
-      "https://your-frontend.vercel.app", // if deployed
-    ],
+    // origin: [
+    //   "http://localhost:3000", // React local
+    //   "https://your-frontend.vercel.app", // if deployed
+    // ],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
     // methods: ["GET", "POST"],
@@ -226,8 +226,8 @@ const syncDatabase = async () => {
 };
 
 console.log("🚀 Starting server...");
-// const PORT = process.env.PORT || 3001;
 const PORT = process.env.PORT || 3001;
+// const PORT = process.env.PORT || 3001;
 
 // Import stock level checker
 const stockLevelChecker = require("./src/jobs/stockLevelChecker");
