@@ -82,15 +82,15 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "*",
-    // origin: [
-    //   "http://localhost:3000", // React local
-    //   "https://your-frontend.vercel.app", // if deployed
-    // ],
+    // origin: "*",
+    origin: [
+      "http://localhost:3000", // React local
+      "https://your-frontend.vercel.app", // if deployed
+    ],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-    // methods: ["GET", "POST"],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST"],
+    // methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   },
 });
 // console.log('✅ Server components created');
@@ -234,41 +234,41 @@ const stockLevelChecker = require("./src/jobs/stockLevelChecker");
 const expirationChecker = require("./src/jobs/expirationChecker");
 
 console.log(`📡 Attempting to listen on port ${PORT}...`);
-server.listen(PORT, () => console.log("Server running on " + PORT));
+// server.listen(PORT, () => console.log("Server running on " + PORT));
 
-// server.listen(PORT, function () {
-//   console.log(`✅ Server is running on http://localhost:${PORT}`);
+server.listen(PORT, function () {
+  console.log(`✅ Server is running on http://localhost:${PORT}`);
 
-//   syncDatabase().then((success) => {
-//     if (success) {
-//       // Start stock level checker after successful database sync
-//       console.log('🔄 Starting stock level monitoring...');
-//       try {
-//         stockLevelChecker.start();
-//         console.log('✅ Stock level checker started successfully');
-//       } catch (error) {
-//         console.error('❌ Failed to start stock level checker:', error);
-//       }
+  syncDatabase().then((success) => {
+    if (success) {
+      // Start stock level checker after successful database sync
+      console.log('🔄 Starting stock level monitoring...');
+      try {
+        stockLevelChecker.start();
+        console.log('✅ Stock level checker started successfully');
+      } catch (error) {
+        console.error('❌ Failed to start stock level checker:', error);
+      }
 
-//       // Start expiration checker
-//       console.log('📅 Starting expiration monitoring...');
-//       try {
-//         expirationChecker.start();
-//         console.log('✅ Expiration checker started successfully');
-//       } catch (error) {
-//         console.error('❌ Failed to start expiration checker:', error);
-//       }
-//     }
-//   }).catch(err => {
-//     console.error('❌ Database sync error (non-fatal):', err.message);
-//   });
-// }).on('error', (err) => {
-//   console.error('❌ Server startup error:', err.message);
-//   if (err.code === 'EADDRINUSE') {
-//     console.error(`❌ Error: Port ${PORT} is already in use.`);
-//     process.exit(1);
-//   } else {
-//     console.error('❌ Server error:', err.message);
-//     process.exit(1);
-//   }
-// });
+      // Start expiration checker
+      console.log('📅 Starting expiration monitoring...');
+      try {
+        expirationChecker.start();
+        console.log('✅ Expiration checker started successfully');
+      } catch (error) {
+        console.error('❌ Failed to start expiration checker:', error);
+      }
+    }
+  }).catch(err => {
+    console.error('❌ Database sync error (non-fatal):', err.message);
+  });
+}).on('error', (err) => {
+  console.error('❌ Server startup error:', err.message);
+  if (err.code === 'EADDRINUSE') {
+    console.error(`❌ Error: Port ${PORT} is already in use.`);
+    process.exit(1);
+  } else {
+    console.error('❌ Server error:', err.message);
+    process.exit(1);
+  }
+});
